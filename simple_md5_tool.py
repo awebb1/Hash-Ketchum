@@ -10,7 +10,7 @@ hashes = ''
 arg_name = ['script', 'file', 'option1', 'option2']
 args = dict(zip(arg_name, sys.argv))
 
-help_msg = '\nPlease provide a file after the script:\n\t\033[1;31;40meg: \033[1;37;40mpython md5_hash_scraper.py \033[1;32;40mpath/to/file.sql\n\t    \033[1;37;40mpython md5_hash_scraper.py \033[1;32;40mpath/to/file.txt\n\n\033[1;37;40moptions (after file):\n\t -c, --count:\twill display a pretty visual of the number rising\n\t -rD:\t\twill remove duplicates from list'
+help_msg = '\nPlease provide a file after the script:\n\t\033[1;31;40meg: \033[1;37;40mpython simple_md5_tool.py \033[1;32;40mpath/to/file.sql\n\t    \033[1;37;40mpython simple_md5_tool.py \033[1;32;40mpath/to/file.txt\n\n\033[1;37;40moptions (after file):\n\t -c, --count:\twill display a pretty visual of the number rising\n\t -rD:\t\twill remove duplicates from list'
 
 # display help message if no args provided
 if len(args) < 2:
