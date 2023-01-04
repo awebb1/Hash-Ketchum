@@ -18,26 +18,30 @@ if len(args) < 2:
 	print(help_msg)
 	exit()
 
+# try except in case file is not found
 try:
 	count = 0
 
 	if args['file'] == '-h' or args['file'] == 'help' or args['file'] == '--help':
 		print(help_msg)
 		exit()
+		
 	file_name = sys.argv[1]
 
 	input_file = open(file_name)
 	file_content = input_file.read()
 
 	print("\n\033[1;36;40m[+] \033[1;37;40mFile loaded, attempting scrape...\n")
-
+	
+	# looping through hashes
 	if re.findall(r"([a-fA-F\d]{32})", file_content):
 		for hash in re.findall(r"([a-fA-F\d]{32})", file_content):
 			hashes += hash + '\n'
 			count += 1
 
 	print("\033[1;36;40m[+] \033[1;37;40mScrape Complete\n")
-
+	
+	# determining output
 	if len(hashes) > 0:
 		hashes = hashes[:len(hashes) - 1]
 
