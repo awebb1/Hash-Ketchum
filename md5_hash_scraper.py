@@ -43,12 +43,8 @@ try:
 		print("\r\033[1;36;40m[+] \033[1;37;40mProcessing...")
 
 		for hash in hash_list:
-			
-			
-
 			hashes += hash + '\n'
 			count += 1
-
 
 			if '-c' in args.values() or '--count' in args.values():
 				print('\r\033[1;35;40m[+] \033[1;33;40m' + str(count), end='')
