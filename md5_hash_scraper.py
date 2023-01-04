@@ -10,7 +10,7 @@ hashes = ''
 arg_name = ['script', 'file', 'option1', 'option2']
 args = dict(zip(arg_name, sys.argv))
 
-help_msg = '\nPlease provide a file after the script:\n\t\033[1;31;40meg: \033[1;37;40mpython md5_hash_scraper.py \033[1;32;40mpath/to/file.sql\n\t    \033[1;37;40mpython md5_hash_scraper.py \033[1;32;40mpath/to/file.txt\n\n\033[1;37;40moptions (after file):\n\t -c, --count:\t will display a pretty visual of the number rising'
+help_msg = '\nPlease provide a file after the script:\n\t\033[1;31;40meg: \033[1;37;40mpython md5_hash_scraper.py \033[1;32;40mpath/to/file.sql\n\t    \033[1;37;40mpython md5_hash_scraper.py \033[1;32;40mpath/to/file.txt\n\n\033[1;37;40moptions (after file):\n\t -c, --count:\twill display a pretty visual of the number rising\n\t -rD:\t\twill remove duplicates from list'
 
 # display help message if no args provided
 if len(args) < 2:
@@ -28,10 +28,24 @@ try:
 	input_file = open(file_name)
 	file_content = input_file.read()
 
-	print("\n\033[1;36;40m[+] \033[1;37;40mFile loaded, attempting scrape...\n")
+	print("\n\033[1;36;40m[+] \033[1;37;40mFile loaded, attempting scrape...")
 
 	if re.findall(r"([a-fA-F\d]{32})", file_content):
-		for hash in re.findall(r"([a-fA-F\d]{32})", file_content):
+		hash_list = re.findall(r"([a-fA-F\d]{32})", file_content)
+
+		if '-rD' in args.values() or '--rD' in args.values():
+			print("\r\033[1;36;40m[+] \033[1;37;40mHashes Found, Removing Any Duplicates...", end='')
+
+			hash_list = [*set(hash_list)]
+
+			print("\r\033[1;36;40m[+] \033[1;37;40mHashes Found, Removing Any Duplicates...DONE\n", end='')
+		
+		print("\r\033[1;36;40m[+] \033[1;37;40mProcessing...")
+
+		for hash in hash_list:
+			
+			
+
 			hashes += hash + '\n'
 			count += 1
 
@@ -39,10 +53,11 @@ try:
 			if '-c' in args.values() or '--count' in args.values():
 				print('\r\033[1;35;40m[+] \033[1;33;40m' + str(count), end='')
 
-	if '-c' in args.values() or '--count' in args.values():
-		print('\r\033[1;35;40m[+] \033[1;33;40m' + str(count) + '\n\n', end='')
+		if '-c' in args.values() or '--count' in args.values():
+			print('\r\033[1;35;40m[+] \033[1;33;40m' + str(count) + '\n', end='')
 
 	print("\033[1;36;40m[+] \033[1;37;40mScrape Complete\n")
+
 
 	if len(hashes) > 0:
 		hashes = hashes[:len(hashes) - 1]
