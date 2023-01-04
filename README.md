@@ -1,4 +1,4 @@
-# Simple-MD5-Scraper
+# Simple-MD5-Tool
 Just a simple python script that takes any readable file type and scrapes md5 hashes out using regex.
 
 # usage:
