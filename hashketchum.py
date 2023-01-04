@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import sys
@@ -33,14 +33,16 @@ try:
 	if re.findall(r"([a-fA-F\d]{32})", file_content):
 		hash_list = re.findall(r"([a-fA-F\d]{32})", file_content)
 
+		print("\r\033[1;36;40m[+] \033[1;37;40mHashes Found", end='')
+
 		if '-rD' in args.values() or '--rD' in args.values():
-			print("\r\033[1;36;40m[+] \033[1;37;40mHashes Found, Removing Any Duplicates...", end='')
+			print("\r\033[1;36;40m[+] \033[1;37;40mRemoving Any Duplicates...", end='')
 
 			hash_list = [*set(hash_list)]
 
-			print("\r\033[1;36;40m[+] \033[1;37;40mHashes Found, Removing Any Duplicates...DONE\n", end='')
+			print("\r\033[1;36;40m[+] \033[1;37;40mRemoving Any Duplicates...DONE\n", end='')
 		
-		print("\r\033[1;36;40m[+] \033[1;37;40mProcessing...")
+		print("\r\033[1;36;40m[+] \033[1;37;40mProcessing File...")
 
 		for hash in hash_list:
 			hashes += hash + '\n'
@@ -52,21 +54,23 @@ try:
 		if '-c' in args.values() or '--count' in args.values():
 			print('\r\033[1;35;40m[+] \033[1;33;40m' + str(count) + '\n', end='')
 
-	print("\033[1;36;40m[+] \033[1;37;40mScrape Complete\n")
+	print("\033[1;36;40m[+] \033[1;37;40mComplete\n")
 
 
 	if len(hashes) > 0:
 		hashes = hashes[:len(hashes) - 1]
 
-		if count < 11:
-			print("\033[1;36;40m[+] \033[1;37;40mHashes Found and Saved:\n\n" + hashes)
-		else:
-			print("\033[1;32;40m[!] \033[1;37;40mFound and Saved \033[1;31;40m" + str(count) + " \033[1;37;40mHashes")
+		f = open("scraped_hashes_" + str(datetime.datetime.now()) + ".txt", "w")
+		f.write(hashes)
+		f.close()
 
-		if len(hashes) > 0:
-			f = open("scarped_hashes_" + str(datetime.datetime.now()) + ".txt", "w")
-			f.write(hashes)
-			f.close()
+		if count < 11:
+			print("\033[1;36;40m[+] \033[1;31;40m" + str(count) + " \033[1;37;40mHashes Found and Saved to \033[1;37;40m./scraped_hashes_" + str(datetime.datetime.now()) + ".txt\n")
+			print(hashes)
+		else:
+			print("\033[1;32;40m[!] \033[1;37;40mFound and Saved \033[1;31;40m" + str(count) + " \033[1;37;40mHashes to \033[1;32;40m./scrarped_hashes_" + str(datetime.datetime.now()) + ".txt\n")
+
+			
 	else:
 		print("\033[1;31;40m[X] \033[1;37;40mNo Hashes Found\n")
 	input_file.close()
