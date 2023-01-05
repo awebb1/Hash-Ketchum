@@ -3,77 +3,67 @@
 import re
 import sys
 import datetime
+import argparse
 
-hashes = ''
+HELP_MSG_COLOR = '\033[1;37;40m'
+ERROR_COLOR = '\033[1;31;40m'
+SUCCESS_COLOR = '\033[1;36;40m'
+PROCESSING_COLOR = '\033[1;35;40m'
+COUNTING_COLOR = '\033[1;33;40m'
+GREEN_COLOR = '\033[1;32;40m'
+DEFAULT_COLOR = '\033[1;0;40m'
 
-# create a dict for args
-arg_name = ['script', 'file', 'option1', 'option2']
-args = dict(zip(arg_name, sys.argv))
+parser = argparse.ArgumentParser(description='Scrape MD5 hashes from a readable file', epilog=f'{ERROR_COLOR}eg: {DEFAULT_COLOR}python3 hashketchum.py {GREEN_COLOR}path/to/file.sql {DEFAULT_COLOR}-[OPTIONS]')
+parser.add_argument('file', help='the file to scrape hashes from')
+parser.add_argument('-c', '--count', action='store_true', help='display a pretty visual of the number rising')
+parser.add_argument('-rD', action='store_true', help='remove duplicates from list')
 
-help_msg = '\n\033[1;37;40mPlease provide a file after the script:\n\t\033[1;31;40meg: \033[1;37;40mpython3 hashketchum.py \033[1;32;40mpath/to/file.sql\n\t    \033[1;37;40mpython3 hashketchum.py \033[1;32;40mpath/to/file.txt\n\n\033[1;37;40moptions (after file):\n\t -c, --count:\twill display a pretty visual of the number rising\n\t -rD:\t\twill remove duplicates from list'
+args = parser.parse_args()
+def main ():
+	try:
+	    count = 0
+	    file_name = args.file
+	    with open(file_name) as input_file:
+	        file_content = input_file.read()
 
-# display help message if no args provided
-if len(args) < 2:
-	print(help_msg)
-	exit()
+	    print(f"\n{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}File loaded, attempting scrape...")
 
-try:
-	count = 0
+	    hash_list = re.findall(r"([a-f\d]{32})", file_content, re.I)
+	    if hash_list:
+	        print(f"{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Hashes Found\n", end='')
 
-	if args['file'] == '-h' or args['file'] == 'help' or args['file'] == '--help':
-		print(help_msg)
-		exit()
-	file_name = sys.argv[1]
+	        if args.rD:
+	            print(f"\r{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Removing Any Duplicates...", end='')
+	            hash_list = [*set(hash_list)]
+	            print(f"\r{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Removing Any Duplicates...DONE\n", end='')
+	        
+	        print(f"{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Processing File...")
 
-	input_file = open(file_name)
-	file_content = input_file.read()
+	        for hash in hash_list:
+	            count += 1
+	            if args.count:
+	                print(f'\r{PROCESSING_COLOR}[+] {COUNTING_COLOR}{count}', end='')
 
-	print("\n\033[1;36;40m[+] \033[1;37;40mFile loaded, attempting scrape...")
+	        if args.count:
+	            print(f'\r{PROCESSING_COLOR}[+] {ERROR_COLOR}{count}\n', end='')
 
-	if re.findall(r"([a-fA-F\d]{32})", file_content):
-		hash_list = re.findall(r"([a-fA-F\d]{32})", file_content)
+	    print(f"{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Complete\n")
 
-		print("\r\033[1;36;40m[+] \033[1;37;40mHashes Found", end='')
+	    if hash_list:
+	        hashes = '\n'.join(hash_list)
+	        with open("scraped_hashes_" + str(datetime.datetime.now()) + ".txt", "w") as f:
+	            f.write(hashes)
 
-		if '-rD' in args.values() or '--rD' in args.values():
-			print("\r\033[1;36;40m[+] \033[1;37;40mRemoving Any Duplicates...", end='')
+	        if count < 11:
+	            print(f"{SUCCESS_COLOR}[+] {ERROR_COLOR}{count} {HELP_MSG_COLOR}Hashes Found and Saved to {GREEN_COLOR}./scraped_hashes_{str(datetime.datetime.now())}.txt")
+	        else:
+	            print(f"{SUCCESS_COLOR}[+] {ERROR_COLOR}{count} {HELP_MSG_COLOR}Hashes Found and Saved to {GREEN_COLOR}./scraped_hashes_{str(datetime.datetime.now())}.txt")
+	    else:
+	    	print(f"{ERROR_COLOR}[X] {HELP_MSG_COLOR}No Hashes Found")
+	except FileNotFoundError:
+	    print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}File not found")
+	except:
+	    print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}An unknown error occurred")
 
-			hash_list = [*set(hash_list)]
-
-			print("\r\033[1;36;40m[+] \033[1;37;40mRemoving Any Duplicates...DONE\n", end='')
-		
-		print("\r\033[1;36;40m[+] \033[1;37;40mProcessing File...")
-
-		for hash in hash_list:
-			hashes += hash + '\n'
-			count += 1
-
-			if '-c' in args.values() or '--count' in args.values():
-				print('\r\033[1;35;40m[+] \033[1;33;40m' + str(count), end='')
-
-		if '-c' in args.values() or '--count' in args.values():
-			print('\r\033[1;35;40m[+] \033[1;33;40m' + str(count) + '\n', end='')
-
-	print("\033[1;36;40m[+] \033[1;37;40mComplete\n")
-
-
-	if len(hashes) > 0:
-		hashes = hashes[:len(hashes) - 1]
-
-		f = open("scraped_hashes_" + str(datetime.datetime.now()) + ".txt", "w")
-		f.write(hashes)
-		f.close()
-
-		if count < 11:
-			print("\033[1;36;40m[+] \033[1;31;40m" + str(count) + " \033[1;37;40mHashes Found and Saved to \033[1;37;40m./scraped_hashes_" + str(datetime.datetime.now()) + ".txt\n")
-			print(hashes)
-		else:
-			print("\033[1;32;40m[!] \033[1;37;40mFound and Saved \033[1;31;40m" + str(count) + " \033[1;37;40mHashes to \033[1;32;40m./scrarped_hashes_" + str(datetime.datetime.now()) + ".txt\n")
-
-			
-	else:
-		print("\033[1;31;40m[X] \033[1;37;40mNo Hashes Found\n")
-	input_file.close()
-
-except IOError:
-	print('\n\033[1;31;40mERROR: \033[1;37;40mFile \033[1;31;40m' + args['file'] + ' \033[1;37;40mCould Not Be Found')
+if __name__ == '__main__':
+	main()
