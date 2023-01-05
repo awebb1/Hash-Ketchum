@@ -36,7 +36,7 @@ args = parser.parse_args()
 
 # main function with various error handling
 #------------------------------------------------------------------
-def main ():
+def main():
 	try:
 		md5()
 	except FileNotFoundError:
@@ -45,8 +45,8 @@ def main ():
 		print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}File is not accessible")
 	except ValueError:
 		parser.print_help()
-	except:
-		print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}An unknown error occurred")
+	# except:
+	# 	print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}An unknown error occurred")
 
 # md5 scraping function
 #----------------------------------------------------------------
@@ -54,7 +54,8 @@ def md5():
 	count = 0
 	file_name = args.file
 
-	if args.file is None: # if statement used to prevent the script from hanging when no file and no stdin is provided, will just show the help menu
+	# if statement used to prevent the script from hanging when no file and no stdin is provided, will just show the help menu
+	if args.file is None: 
 		if sys.stdin.isatty():
 			raise ValueError
 		else:
@@ -79,12 +80,14 @@ def md5():
 		print(f"{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Processing File...")
 
 		# literally just for the -c argument now. loop was utilized to build list before now it's solely cosmetic
-		if arg.count:
+		if args.count:
 			for hash in hash_list:
 				count += 1
 				print(f'\r{PROCESSING_COLOR}[+] {COUNTING_COLOR}{count}', end='')
 
 			print(f'\r{PROCESSING_COLOR}[+] {ERROR_COLOR}{count}\n', end='')
+		else:
+			count = len(hash_list)
 
 	print(f"{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Complete\n")
 
@@ -111,6 +114,7 @@ def removeDuplicates(hash_list):
 	print(f"\r{GREEN_COLOR}[!] {ERROR_COLOR}" + str(length - len(hash_list)) + f" {HELP_MSG_COLOR}Duplicates Removed\n", end='')
 
 	return hash_list
+
 # call the main function
 if __name__ == '__main__':
 	main()
