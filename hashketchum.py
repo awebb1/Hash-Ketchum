@@ -67,7 +67,7 @@ def md5():
 	print(f"\n{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}File loaded, attempting scrape...")
 
 	# using regex to find all hashes
-	hash_list = re.findall(r"([a-f\d]{32})", file_content, re.I)
+	hash_list = re.findall(r"(^[a-f\d]{32}$)", file_content, re.I)
 
 	# if statement for if hashes are or are not found
 	if hash_list:
