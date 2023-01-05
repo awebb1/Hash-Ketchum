@@ -45,8 +45,8 @@ def main():
 		print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}File is not accessible")
 	except ValueError:
 		parser.print_help()
-	# except:
-	# 	print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}An unknown error occurred")
+	except:
+		print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}An unknown error occurred")
 
 # md5 scraping function
 #----------------------------------------------------------------
