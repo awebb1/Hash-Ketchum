@@ -28,7 +28,6 @@ def main ():
 	except:
 	    print(f"\n{ERROR_COLOR}[-] {HELP_MSG_COLOR}An unknown error occurred")
 
-
 def md5():
 	count = 0
 	file_name = args.file
