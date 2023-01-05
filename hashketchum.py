@@ -61,17 +61,19 @@ def md5():
 		with open("scraped_hashes_" + str(datetime.datetime.now()) + ".txt", "w") as f:
 			f.write(hashes)
 
-		if count < 11:
-			print(f"{SUCCESS_COLOR}[+] {ERROR_COLOR}{count} {HELP_MSG_COLOR}Hashes Found and Saved to {GREEN_COLOR}./scraped_hashes_{str(datetime.datetime.now())}.txt")
+		if args.rD:
+			print(f"{GREEN_COLOR}[!] {ERROR_COLOR}{count} {HELP_MSG_COLOR}Unique Hashes Found and Saved to {GREEN_COLOR}./scraped_hashes_{str(datetime.datetime.now())}.txt")
 		else:
-			print(f"{SUCCESS_COLOR}[+] {ERROR_COLOR}{count} {HELP_MSG_COLOR}Hashes Found and Saved to {GREEN_COLOR}./scraped_hashes_{str(datetime.datetime.now())}.txt")
+			print(f"{GREEN_COLOR}[!] {ERROR_COLOR}{count} {HELP_MSG_COLOR}Hashes Found and Saved to {GREEN_COLOR}./scraped_hashes_{str(datetime.datetime.now())}.txt")
 	else:
 		print(f"{ERROR_COLOR}[X] {HELP_MSG_COLOR}No Hashes Found")
 
 def removeDuplicates(hash_list):
+	length = len(hash_list)
 	print(f"\r{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Removing Any Duplicates...", end='')
 	hash_list = [*set(hash_list)]
 	print(f"\r{SUCCESS_COLOR}[+] {HELP_MSG_COLOR}Removing Any Duplicates...DONE\n", end='')
+	print(f"\r{GREEN_COLOR}[!] {ERROR_COLOR}" + str(length - len(hash_list)) + f" {HELP_MSG_COLOR}Duplicates Removed\n", end='')
 
 	return hash_list
 
